@@ -1,17 +1,21 @@
 NAME=bibliography_jeremie_decock
 
-JDHP_PDF_DIR=~/git/pub/jdhp/files/pdf
-#JDHP_HEVEA_DIR=~/git/pub/jdhp/files/hevea
+JDHP_ROOT=~/jdhp
+
 # HEVEA doit être mis dans www plutot que dans download pour les stats et le référencement...
-JDHP_HEVEA_DIR=~/git/pub/jdhp/jdhp/hevea
-JDHP_UPLOAD_PDF_SCRIPT=~/git/pub/jdhp/files_upload.sh
-JDHP_UPLOAD_HEVEA_SCRIPT=~/git/pub/jdhp/jdhp/sync_hevea.sh
+JDHP_HEVEA_DIR=${JDHP_ROOT}/www.jdhp.org/hevea
+JDHP_PDF_DIR=${JDHP_ROOT}/download.tuxfamily.org/pdf
+JDHP_BIB_DIR=${JDHP_ROOT}/download.tuxfamily.org/bib
+
+JDHP_DOWNLOAD_FILES_SCRIPT=${JDHP_ROOT}/download.tuxfamily.org.pull.sh
+JDHP_UPLOAD_FILES_SCRIPT=${JDHP_ROOT}/download.tuxfamily.org.push.sh
+JDHP_UPLOAD_HEVEA_SCRIPT=${JDHP_ROOT}/www.jdhp.org/push_hevea.sh
 
 #############
 
 all: $(NAME).pdf
 
-.PHONY : all clean init ps html hevea jdhp
+.PHONY : all clean init ps html hevea jdhp publish
 
 ## ARTICLE ##
 
@@ -42,18 +46,26 @@ $(NAME).html: $(SRCARTICLE)
 	bibhva $(NAME)     # this is the name of the .aux file, not the .bib file !
 	hevea -fix $(NAME).tex
 
+publish: jdhp
+
 jdhp:$(NAME).pdf $(NAME).html
+	# Download the latest version of published files (it make the assumption
+	# that the remote site always contains the latest version of files)
+	$(JDHP_DOWNLOAD_FILES_SCRIPT)
+	
 	# Copy PDF
 	cp -v $(NAME).pdf  $(JDHP_PDF_DIR)/
+	
 	# Copy Bibtex
-	cp -v *.bib  $(JDHP_PDF_DIR)/
+	cp -v *.bib  $(JDHP_BIB_DIR)/
+	
 	# Copy HTML
 	@rm -rf $(JDHP_HEVEA_DIR)/$(NAME)
 	@mkdir $(JDHP_HEVEA_DIR)/$(NAME)
 	cp -v $(NAME).html $(JDHP_HEVEA_DIR)/$(NAME)
-	cp -vr fig $(JDHP_HEVEA_DIR)/$(NAME)
-	# Sync
-	$(JDHP_UPLOAD_PDF_SCRIPT)
+	
+	# Upload files
+	$(JDHP_UPLOAD_FILES_SCRIPT)
 	$(JDHP_UPLOAD_HEVEA_SCRIPT)
 
 ## CLEAN ##
