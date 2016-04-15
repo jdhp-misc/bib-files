@@ -1,4 +1,4 @@
-NAME=bibliography
+NAME=bibliography_jeremie_decock
 
 JDHP_PDF_DIR=~/git/pub/jdhp/files/pdf
 #JDHP_HEVEA_DIR=~/git/pub/jdhp/files/hevea
@@ -11,7 +11,7 @@ JDHP_UPLOAD_HEVEA_SCRIPT=~/git/pub/jdhp/jdhp/sync_hevea.sh
 
 all: $(NAME).pdf
 
-.PHONY : all clean init jdhp
+.PHONY : all clean init ps html hevea jdhp
 
 ## ARTICLE ##
 
@@ -24,12 +24,18 @@ $(NAME).pdf: $(SRCARTICLE)
 	pdflatex $(NAME).tex
 	pdflatex $(NAME).tex
 
+ps: $(NAME).ps
+
 $(NAME).ps: $(SRCARTICLE)
 	latex $(NAME).tex
 	bibtex $(NAME)     # this is the name of the .aux file, not the .bib file !
 	latex $(NAME).tex
 	latex $(NAME).tex
 	dvips $(NAME).dvi
+
+html: $(NAME).html
+
+hevea: $(NAME).html
 
 $(NAME).html: $(SRCARTICLE)
 	hevea -fix $(NAME).tex
@@ -39,6 +45,8 @@ $(NAME).html: $(SRCARTICLE)
 jdhp:$(NAME).pdf $(NAME).html
 	# Copy PDF
 	cp -v $(NAME).pdf  $(JDHP_PDF_DIR)/
+	# Copy Bibtex
+	cp -v *.bib  $(JDHP_PDF_DIR)/
 	# Copy HTML
 	@rm -rf $(JDHP_HEVEA_DIR)/$(NAME)
 	@mkdir $(JDHP_HEVEA_DIR)/$(NAME)
