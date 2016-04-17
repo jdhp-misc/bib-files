@@ -3,7 +3,6 @@ NAME=bibliography_jeremie_decock
 # JDHP_ROOT_PATH is a shell environment variable that contains the root path of
 # the www-jdhp-org git repository.
 
-# HEVEA doit être mis dans www plutot que dans download pour les stats et le référencement...
 JDHP_HEVEA_DIR=${JDHP_ROOT_PATH}/www.jdhp.org/hevea
 JDHP_PDF_DIR=${JDHP_ROOT_PATH}/download.tuxfamily.org/pdf
 JDHP_BIB_DIR=${JDHP_ROOT_PATH}/download.tuxfamily.org/bib
@@ -12,7 +11,7 @@ JDHP_DOWNLOAD_FILES_SCRIPT=${JDHP_ROOT_PATH}/download.tuxfamily.org.pull.sh
 JDHP_UPLOAD_FILES_SCRIPT=${JDHP_ROOT_PATH}/download.tuxfamily.org.push.sh
 JDHP_UPLOAD_HEVEA_SCRIPT=${JDHP_ROOT_PATH}/www.jdhp.org/push_hevea.sh
 
-#############
+###############################################################################
 
 all: $(NAME).pdf
 
